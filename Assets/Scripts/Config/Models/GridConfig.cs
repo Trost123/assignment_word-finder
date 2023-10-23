@@ -1,15 +1,16 @@
-﻿namespace Config.Models
+﻿// ReSharper disable InconsistentNaming
+namespace Config.Models
 {
     [System.Serializable]
     public class GridConfig
     {
-        public GridConfiguration[] Grids;
+        public GridConfiguration[] grids;
 
         [System.Serializable]
         public class GridConfiguration
         {
-            public int Id;
-            public string[][] Grid;
+            public int id;
+            public string[][] grid;
         }
     }
 }

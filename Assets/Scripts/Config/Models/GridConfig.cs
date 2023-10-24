@@ -1,4 +1,8 @@
 ﻿// ReSharper disable InconsistentNaming
+
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace Config.Models
 {
     [System.Serializable]
@@ -10,7 +14,8 @@ namespace Config.Models
         public class GridConfiguration
         {
             public int id;
-            public string[][] grid;
+            [JsonProperty("grid")]
+            public List<List<string>> grid;
         }
     }
 }

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Newtonsoft.Json;
 
 namespace Config.Services
 {
@@ -18,7 +19,7 @@ namespace Config.Services
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                return JsonUtility.FromJson<GridConfig>(handle.Result.text);
+                return JsonConvert.DeserializeObject<GridConfig>(handle.Result.text);
             }
             else
             {

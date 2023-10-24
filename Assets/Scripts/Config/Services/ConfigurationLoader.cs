@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Config.Interfaces;
+using Config.Models;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Config.Services
@@ -17,9 +19,9 @@ namespace Config.Services
             _debugMode = debugMode;
         }
 
-        public Task LoadConfigurationAsync(string path)
+        public Task<GridConfig> LoadConfigurationAsync(string path)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            var tcs = new TaskCompletionSource<GridConfig>();
 
             _configReader.LoadConfig(path).ContinueWith(loadConfigTask =>
             {
@@ -32,12 +34,13 @@ namespace Config.Services
                     var gridConfig = loadConfigTask.Result;
                     if (_debugMode)
                     {
-                        Debug.Log(JsonUtility.ToJson(gridConfig, true));
+                        var jsonText = JsonConvert.SerializeObject(gridConfig);
+                        Debug.Log(jsonText);
                     }
 
                     // Further processing of gridConfig if necessary...
 
-                    tcs.SetResult(true);
+                    tcs.SetResult(gridConfig);
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
 

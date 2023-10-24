@@ -1,25 +1,28 @@
-using System;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 
-public class GridController : MonoBehaviour
+namespace Controllers
 {
-    [SerializeField]
-    private GameObject cardPrefab;
-    
-    [SerializeField]
-    private Transform gridPanel;
-
-    public void PopulateGrid(List<List<string>> gridData)
+    public class GridController : MonoBehaviour
     {
-        foreach (var row in gridData)
+        [SerializeField]
+        private GameObject cardPrefab;
+    
+        [SerializeField]
+        private Transform gridPanel;
+
+        public void PopulateGrid(List<List<string>> gridData)
         {
-            foreach (var letter in row)
+            foreach (var row in gridData)
             {
-                var card = Instantiate(cardPrefab, gridPanel);
-                // Assume Card is a script to handle individual card logic
-                var cardScript = card.GetComponent<Card>();
-                cardScript.SetLetter(letter);
+                foreach (var letter in row)
+                {
+                    var card = Instantiate(cardPrefab, gridPanel);
+                    // Assume Card is a script to handle individual card logic
+                    var cardScript = card.GetComponent<Card>();
+                    cardScript.SetLetter(letter);
+                }
             }
         }
     }

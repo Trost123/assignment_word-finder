@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 714218661154535212}
   - component: {fileID: 5084316063884367087}
   - component: {fileID: 8220862640380913180}
+  - component: {fileID: 5624204981491200826}
   m_Layer: 5
   m_Name: Letter Card
   m_TagString: Untagged
@@ -226,3 +227,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   letterText: {fileID: 7275901205360251415}
+  cardImage: {fileID: 5084316063884367087}
+  frontColor: {r: 0.09291859, g: 0.06274508, b: 0.6901961, a: 1}
+  backColor: {r: 0.6603774, g: 0.07787468, b: 0.07787468, a: 1}
+--- !u!114 &5624204981491200826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8980928891771614189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8220862640380913180}
+          m_TargetAssemblyTypeName: UI.Card, Assembly-CSharp
+          m_MethodName: FlipCard
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 0

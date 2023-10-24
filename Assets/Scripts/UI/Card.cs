@@ -1,18 +1,59 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
-public class Card : MonoBehaviour
+namespace UI
 {
-    [SerializeField]
-    private TextMeshProUGUI letterText;
-    
-    public void SetLetter(string letter)
+    public class Card : MonoBehaviour
     {
-        if (letter == "_")
+        [SerializeField]
+        private TextMeshProUGUI letterText;
+        [SerializeField]
+        private Image cardImage;  // Reference to the Image component
+        [SerializeField]
+        private Color frontColor;  // Color for the front side
+        [SerializeField]
+        private Color backColor;  // Color for the back side
+
+        private void Start()
         {
-            letter = "";
+            if (cardImage == null)
+            {
+                cardImage = GetComponent<Image>();
+            }
+            
+            // Set the initial color to the backColor as the card is facing away
+            cardImage.color = backColor;
+            letterText.gameObject.SetActive(false);
+            transform.rotation = Quaternion.Euler(0, 180, 0);
         }
+
+        public void SetLetter(string letter)
+        {
+            if (letter == "_")
+            {
+                letter = "";
+            }
         
-        letterText.text = letter;
+            letterText.text = letter;
+        }
+
+        public void FlipCard()
+        {
+            // Create a new sequence
+            Sequence sequence = DOTween.Sequence();
+            
+            // Add the first rotation to 90 degrees to the sequence
+            sequence.Append(transform.DORotate(new Vector3(0, 90, 0), 0.25f).OnComplete(() => 
+            {
+                // Change color and enable text at half-flip
+                cardImage.color = frontColor;
+                letterText.gameObject.SetActive(true);
+            }));
+            
+            // Add the second rotation from 90 to 0 degrees to the sequence
+            sequence.Append(transform.DORotate(new Vector3(0, 0, 0), 0.25f));
+        }
     }
 }

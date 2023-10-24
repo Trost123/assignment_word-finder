@@ -9,19 +9,19 @@ namespace GameLogic
 {
     public class WordMatcher : IWordMatcher
     {
-        private List<string> words;
+        private readonly List<Word> _words;
         // Receive the GridConfig in the constructor
         public WordMatcher(GridConfig gridConfig)
         {
             var parser = new WordParser(gridConfig.grids[0].grid);
-            words = parser.ParseWords();
+            _words = parser.ParseWords();
         }
 
-        public bool MatchWord(string word)
+        public Word MatchWord(string word)
         {
-            var wordExists = words.Any(w => string.Equals(w, word, StringComparison.OrdinalIgnoreCase));
-            Debug.Log("Word matching: " + word + " " + wordExists);
-            return wordExists;
+            var matchedWord = _words.FirstOrDefault(w => string.Equals(w.Text, word, StringComparison.OrdinalIgnoreCase));
+            Debug.Log("Word matching: " + word + " " + (matchedWord != null));
+            return matchedWord;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace UI
             cardImage.color = backColor;
             letterText.gameObject.SetActive(false);
             transform.rotation = Quaternion.Euler(0, 180, 0);
+            // FlipCard();
         }
 
         public void SetLetter(string letter)

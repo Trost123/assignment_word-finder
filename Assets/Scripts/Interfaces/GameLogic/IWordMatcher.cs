@@ -1,8 +1,9 @@
-﻿
+﻿using GameLogic;
+
 namespace Interfaces.GameLogic
 {
     public interface IWordMatcher
     {
-        bool MatchWord(string word);
+        Word MatchWord(string word);
     }
 }

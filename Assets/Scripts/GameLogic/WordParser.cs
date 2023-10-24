@@ -12,27 +12,59 @@ namespace GameLogic
             _grid = grid ?? throw new System.ArgumentNullException(nameof(grid));
         }
 
-        public List<string> ParseWords()
+        public List<Word> ParseWords()
         {
-            var words = new List<string>();
+            var words = new List<Word>();
             words.AddRange(ParseWordsFromRows());
             words.AddRange(ParseWordsFromColumns());
             return words;
         }
 
-        private IEnumerable<string> ParseWordsFromRows()
+        // Other methods remain the same...
+
+        private IEnumerable<Word> ParseWordsFromStringList(List<string> strList, bool isRow, int index)
         {
-            var words = new List<string>();
-            foreach (var row in _grid)
+            var words = new List<Word>();
+            var word = new StringBuilder();
+            var coordinates = new List<(int row, int col)>();
+            for (int i = 0; i < strList.Count; i++)
             {
-                words.AddRange(ParseWordsFromStringList(row));
+                var letter = strList[i];
+                if (string.IsNullOrWhiteSpace(letter) || letter == "_")
+                {
+                    if (word.Length > 0)
+                    {
+                        words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
+                        word.Clear();
+                        coordinates.Clear();
+                    }
+                }
+                else
+                {
+                    word.Append(letter);
+                    coordinates.Add(isRow ? (index, i) : (i, index));
+                }
+            }
+            if (word.Length > 0)
+            {
+                words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
             }
             return words;
         }
 
-        private IEnumerable<string> ParseWordsFromColumns()
+        private IEnumerable<Word> ParseWordsFromRows()
         {
-            var words = new List<string>();
+            var words = new List<Word>();
+            for (int i = 0; i < _grid.Count; i++)
+            {
+                words.AddRange(ParseWordsFromStringList(_grid[i], true, i));
+            }
+            return words;
+        }
+
+        private IEnumerable<Word> ParseWordsFromColumns()
+        {
+            var words = new List<Word>();
             int rowCount = _grid.Count;
             int colCount = _grid[0].Count;
 
@@ -43,33 +75,7 @@ namespace GameLogic
                 {
                     column.Add(_grid[row][col]);
                 }
-                words.AddRange(ParseWordsFromStringList(column));
-            }
-            return words;
-        }
-
-        private IEnumerable<string> ParseWordsFromStringList(List<string> strList)
-        {
-            var words = new List<string>();
-            var word = new StringBuilder();
-            foreach (var letter in strList)
-            {
-                if (string.IsNullOrWhiteSpace(letter) || letter == "_")
-                {
-                    if (word.Length > 0)
-                    {
-                        words.Add(word.ToString());
-                        word.Clear();
-                    }
-                }
-                else
-                {
-                    word.Append(letter);
-                }
-            }
-            if (word.Length > 0)
-            {
-                words.Add(word.ToString());
+                words.AddRange(ParseWordsFromStringList(column, false, col));
             }
             return words;
         }

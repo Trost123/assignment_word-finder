@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Config.Models;
 using Config.Services;
 using Controllers;
 using GameLogic;
-using Input;
+using Interfaces.GameLogic;
 using Interfaces.Input;
 using UnityEngine;
 using Zenject;
@@ -17,7 +16,7 @@ namespace Managers
         private readonly GridController _gridController;
         private readonly IUserInputHandler _userInputHandler;
         
-        private WordMatcher _wordMatcher;
+        private IWordMatcher _wordMatcher;
 
         public event Action GameStarted;
 
@@ -41,15 +40,28 @@ namespace Managers
                 else
                 {
                     GameStarted?.Invoke();
-                    _userInputHandler.WordSubmitted += s => _wordMatcher.MatchWord(s);
+                    _userInputHandler.WordSubmitted += s =>
+                    {
+                        var matchedWord = _wordMatcher.MatchWord(s);
+                        if(matchedWord == null) return;
+                        OpenWordOnGrid(matchedWord);
+                    };
                 }
             }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void OpenWordOnGrid(Word matchedWord)
+        {
+            foreach (var coordinate in matchedWord.Coordinates)
+            {
+                _gridController.OpenCell(coordinate);
+            }
         }
 
         private async Task StartGameAsync()
         {
             var gridConfig = await _configurationLoader.LoadConfigurationAsync("Assets/Config/grid_config.json");
-            _gridController.PopulateGrid(gridConfig.grids[1].grid);  // Call PopulateGrid with the first grid
+            _gridController.PopulateGrid(gridConfig.grids[0].grid);  // Call PopulateGrid with the first grid
             _wordMatcher = new WordMatcher(gridConfig);
         }
     }

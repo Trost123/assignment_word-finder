@@ -1,11 +1,15 @@
+using Controllers;
 using Managers;
 using Zenject;
 
-public class SceneInstaller : MonoInstaller
+namespace Installers
 {
-    public override void InstallBindings()
+    public class SceneInstaller : MonoInstaller
     {
-        Container.Bind<GridController>().FromComponentInHierarchy().AsSingle();
-        Container.Bind<GameManager>().AsSingle().NonLazy();
+        public override void InstallBindings()
+        {
+            Container.Bind<GridController>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<GameManager>().AsSingle().NonLazy();
+        }
     }
 }

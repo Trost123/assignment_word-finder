@@ -1,28 +1,24 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 namespace UI
 {
     public class Card : MonoBehaviour
     {
-        [SerializeField]
-        private TextMeshProUGUI letterText;
-        [SerializeField]
-        private Image cardImage;  // Reference to the Image component
-        [SerializeField]
-        private Color frontColor;  // Color for the front side
-        [SerializeField]
-        private Color backColor;  // Color for the back side
+        [SerializeField] private TextMeshProUGUI letterText;
+
+        [SerializeField] private Image cardImage; // Reference to the Image component
+
+        [SerializeField] private Color frontColor; // Color for the front side
+
+        [SerializeField] private Color backColor; // Color for the back side
 
         private void Start()
         {
-            if (cardImage == null)
-            {
-                cardImage = GetComponent<Image>();
-            }
-            
+            if (cardImage == null) cardImage = GetComponent<Image>();
+
             // Set the initial color to the backColor as the card is facing away
             cardImage.color = backColor;
             letterText.gameObject.SetActive(false);
@@ -31,27 +27,24 @@ namespace UI
 
         public void SetLetter(string letter)
         {
-            if (letter == "_")
-            {
-                letter = "";
-            }
-        
+            if (letter == "_") letter = "";
+
             letterText.text = letter;
         }
 
         public void FlipCard()
         {
             // Create a new sequence
-            Sequence sequence = DOTween.Sequence();
-            
+            var sequence = DOTween.Sequence();
+
             // Add the first rotation to 90 degrees to the sequence
-            sequence.Append(transform.DORotate(new Vector3(0, 90, 0), 0.25f).OnComplete(() => 
+            sequence.Append(transform.DORotate(new Vector3(0, 90, 0), 0.25f).OnComplete(() =>
             {
                 // Change color and enable text at half-flip
                 cardImage.color = frontColor;
                 letterText.gameObject.SetActive(true);
             }));
-            
+
             // Add the second rotation from 90 to 0 degrees to the sequence
             sequence.Append(transform.DORotate(new Vector3(0, 0, 0), 0.25f));
         }

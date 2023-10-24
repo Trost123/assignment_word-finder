@@ -1,11 +1,10 @@
 ﻿using Config.Interfaces;
 using Config.Services;
 using UnityEngine;
+using Zenject;
 
 namespace Installers
 {
-    using Zenject;
-
     public class ProjectInstaller : MonoInstaller
     {
         [SerializeField] private bool DebugMode;

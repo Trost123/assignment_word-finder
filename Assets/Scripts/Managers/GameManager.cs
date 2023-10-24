@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Config.Models;
 using Config.Services;
 using Controllers;
 using UnityEngine;
@@ -10,9 +9,9 @@ namespace Managers
 {
     public class GameManager
     {
-        private readonly GridController _gridController;
         private readonly ConfigurationLoader _configurationLoader;
-    
+        private readonly GridController _gridController;
+
         [Inject]
         public GameManager(GridController gridController, ConfigurationLoader configurationLoader)
         {
@@ -26,8 +25,8 @@ namespace Managers
         {
             try
             {
-                GridConfig gridConfig = await _configurationLoader.LoadConfigurationAsync("Assets/Config/grid_config.json");
-                _gridController.PopulateGrid(gridConfig.grids[1].grid);  // Call PopulateGrid with the first grid
+                var gridConfig = await _configurationLoader.LoadConfigurationAsync("Assets/Config/grid_config.json");
+                _gridController.PopulateGrid(gridConfig.grids[1].grid); // Call PopulateGrid with the first grid
             }
             catch (Exception ex)
             {

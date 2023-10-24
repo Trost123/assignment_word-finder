@@ -2,10 +2,10 @@
 using Config.Interfaces;
 using Config.Models;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using Newtonsoft.Json;
 
 namespace Config.Services
 {
@@ -21,11 +21,9 @@ namespace Config.Services
             {
                 return JsonConvert.DeserializeObject<GridConfig>(handle.Result.text);
             }
-            else
-            {
-                Debug.LogError($"Failed to load config from path: {path}, Status: {handle.Status}");
-                return null;
-            }
+
+            Debug.LogError($"Failed to load config from path: {path}, Status: {handle.Status}");
+            return null;
         }
     }
 }

@@ -168,6 +168,12 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "file:com.unity.nuget.newtonsoft-json",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.scriptablebuildpipeline": {
       "version": "1.21.20",
       "depth": 1,

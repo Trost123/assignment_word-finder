@@ -10,19 +10,19 @@ namespace Config.Services
     [UsedImplicitly]
     public class ConfigurationLoader
     {
-        public async Task<T> LoadConfigAsync<T>(string path)
+        public static async Task<T> LoadConfigAsync<T>(string path)
         {
             try
             {
                 // Read the file asynchronously
                 using var streamReader = new StreamReader(path);
-                string jsonText = await streamReader.ReadToEndAsync();
+                var jsonText = await streamReader.ReadToEndAsync();
                 return JsonConvert.DeserializeObject<T>(jsonText);
             }
             catch (Exception ex)
             {
                 Debug.LogError($"Failed to load config from path: {path}, Exception: {ex.Message}");
-                return default;  // Returns null for reference types, zero for numeric types, etc.
+                return default; // Returns null for reference types, zero for numeric types, etc.
             }
         }
     }

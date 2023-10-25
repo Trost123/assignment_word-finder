@@ -14,65 +14,57 @@ namespace Managers
 {
     public class GameManager
     {
-        private readonly ConfigurationLoader _configurationLoader;
         private readonly GridController _gridController;
+        private readonly SignalBus _signalBus;
         private readonly IUserInputHandler _userInputHandler;
         private readonly WrongWordHandler _wrongWordHandler;
-        private  readonly SignalBus _signalBus;
-        
+
         private IWordMatcher _wordMatcher;
 
         [Inject]
-        public GameManager(GridController gridController, ConfigurationLoader configurationLoader,
-            IUserInputHandler userInputHandler, SignalBus signalBus, WrongWordHandler wrongWordHandler)
+        public GameManager(GridController gridController, IUserInputHandler userInputHandler,
+            SignalBus signalBus, WrongWordHandler wrongWordHandler)
         {
             _gridController = gridController;
-            _configurationLoader = configurationLoader;
             _userInputHandler = userInputHandler;
             _signalBus = signalBus;
             _wrongWordHandler = wrongWordHandler;
-            
+
             StartGame();
         }
 
         private void StartGame()
         {
-            StartGameAsync().ContinueWith(t => 
+            StartGameAsync().ContinueWith(t =>
             {
                 if (t.IsFaulted)
-                {
                     Debug.LogError(t.Exception);
-                }
                 else
-                {
                     _userInputHandler.WordSubmitted += s =>
                     {
                         var matchedWord = _wordMatcher.MatchAndRemoveWord(s);
-                        
+
                         if (matchedWord == null)
                         {
                             _signalBus.Fire(new IncorrectWordSignal());
                             return;
                         }
-                        
+
                         OpenWordOnGrid(matchedWord);
                     };
-                }
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private async void OpenWordOnGrid(Word matchedWord)
         {
-            foreach (var coordinate in matchedWord.Coordinates)
-            {
-                await _gridController.OpenCellAsync(coordinate);
-            }
+            foreach (var coordinate in matchedWord.Coordinates) await _gridController.OpenCellAsync(coordinate);
         }
 
         private async Task StartGameAsync()
         {
-            var loadGridConfigTask = _configurationLoader.LoadConfigAsync<GridConfig>("Assets/Config/grid_config.json");
-            var loadBehaviorConfigTask = _configurationLoader.LoadConfigAsync<AppConfig>("Assets/Config/behavior_config.json");
+            var loadGridConfigTask = ConfigurationLoader.LoadConfigAsync<GridConfig>("Assets/Config/grid_config.json");
+            var loadBehaviorConfigTask =
+                ConfigurationLoader.LoadConfigAsync<AppConfig>("Assets/Config/behavior_config.json");
 
             await Task.WhenAll(loadGridConfigTask, loadBehaviorConfigTask);
 
@@ -80,7 +72,7 @@ namespace Managers
             var behaviorConfig = loadBehaviorConfigTask.Result;
 
             var currentGrid = gridConfig.Grid;
-            _gridController.PopulateGrid(currentGrid);  // Call PopulateGrid with the first grid
+            _gridController.PopulateGrid(currentGrid); // Call PopulateGrid with the first grid
             _wrongWordHandler.SetBehaviorConfig(behaviorConfig);
             _wordMatcher = new WordMatcher(currentGrid);
         }

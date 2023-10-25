@@ -1,6 +1,4 @@
-﻿using Config.Services;
-using UnityEngine;
-using Zenject;
+﻿using Zenject;
 
 namespace Installers
 {
@@ -8,7 +6,6 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<ConfigurationLoader>().AsSingle().NonLazy();
         }
     }
 }

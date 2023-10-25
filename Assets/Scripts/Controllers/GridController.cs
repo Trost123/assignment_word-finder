@@ -9,12 +9,12 @@ namespace Controllers
     {
         [SerializeField] private GameObject cardPrefab;
         [SerializeField] private Transform gridPanel;
-        
+
         private readonly List<List<Card>> _gridCards = new();
 
         public void PopulateGrid(List<List<string>> gridData)
         {
-            _gridCards.Clear();  // Clear any existing data
+            _gridCards.Clear(); // Clear any existing data
             foreach (var row in gridData)
             {
                 var cardRow = new List<Card>();
@@ -25,6 +25,7 @@ namespace Controllers
                     cardScript.SetLetter(letter);
                     cardRow.Add(cardScript);
                 }
+
                 _gridCards.Add(cardRow);
             }
         }
@@ -35,7 +36,7 @@ namespace Controllers
             if (card != null && !card.IsOpen)
             {
                 card.FlipCard();
-                await Task.Delay(500);  // 0.5 seconds delay, adjust as needed
+                await Task.Delay(500); // 0.5 seconds delay, adjust as needed
             }
         }
     }

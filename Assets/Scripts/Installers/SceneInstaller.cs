@@ -1,13 +1,10 @@
 using Audio;
 using Controllers;
 using Handlers;
-using Input;
 using Interfaces.Audio;
 using Interfaces.Input;
-using Interfaces.UI;
 using Managers;
 using Signals;
-using UI;
 using UnityEngine;
 using Zenject;
 
@@ -25,10 +22,10 @@ namespace Installers
             // Signals
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<IncorrectWordSignal>();
-            
+
             // Signal handlers
             Container.BindInterfacesAndSelfTo<WrongWordHandler>().AsSingle();
-            
+
             // Managers
             Container.Bind<IAudioManager>().To<AudioManager>().AsSingle();
             Container.Bind<GameManager>().AsSingle().NonLazy();

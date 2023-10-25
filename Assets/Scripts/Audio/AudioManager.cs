@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Interfaces.Audio;
+﻿using Interfaces.Audio;
+using UnityEngine;
 using Zenject;
 
 namespace Audio
@@ -16,10 +16,7 @@ namespace Audio
 
         public void PlaySound()
         {
-            if (_audioSource.isPlaying)
-            {
-                _audioSource.Stop();
-            }
+            if (_audioSource.isPlaying) _audioSource.Stop();
             _audioSource.Play();
         }
     }

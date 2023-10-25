@@ -1,4 +1,6 @@
 ﻿namespace Signals
 {
-    public class IncorrectWordSignal { }
+    public class IncorrectWordSignal
+    {
+    }
 }

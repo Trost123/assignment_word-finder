@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Config.Models;
 using Interfaces.GameLogic;
 
 namespace GameLogic
@@ -9,6 +8,7 @@ namespace GameLogic
     public class WordMatcher : IWordMatcher
     {
         private readonly List<Word> _words;
+
         // Receive the GridConfig in the constructor
         public WordMatcher(List<List<string>> grid)
         {
@@ -18,7 +18,8 @@ namespace GameLogic
 
         public Word MatchAndRemoveWord(string word)
         {
-            var matchedWord = _words.FirstOrDefault(w => string.Equals(w.Text, word, StringComparison.OrdinalIgnoreCase));
+            var matchedWord =
+                _words.FirstOrDefault(w => string.Equals(w.Text, word, StringComparison.OrdinalIgnoreCase));
             _words.Remove(matchedWord);
             return matchedWord;
         }

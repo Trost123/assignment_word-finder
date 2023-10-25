@@ -7,6 +7,7 @@ using Controllers;
 using GameLogic;
 using Interfaces.GameLogic;
 using Interfaces.Input;
+using Signals;
 using UnityEngine;
 using Zenject;
 
@@ -17,17 +18,18 @@ namespace Managers
         private readonly ConfigurationLoader _configurationLoader;
         private readonly GridController _gridController;
         private readonly IUserInputHandler _userInputHandler;
+        private  readonly SignalBus _signalBus;
         
         private IWordMatcher _wordMatcher;
 
-        public event Action GameStarted;
-
         [Inject]
-        public GameManager(GridController gridController, ConfigurationLoader configurationLoader, IUserInputHandler userInputHandler)
+        public GameManager(GridController gridController, ConfigurationLoader configurationLoader, IUserInputHandler userInputHandler, SignalBus signalBus)
         {
             _gridController = gridController;
             _configurationLoader = configurationLoader;
             _userInputHandler = userInputHandler;
+            _signalBus = signalBus;
+            
             StartGame();
         }
 
@@ -41,11 +43,16 @@ namespace Managers
                 }
                 else
                 {
-                    GameStarted?.Invoke();
                     _userInputHandler.WordSubmitted += s =>
                     {
                         var matchedWord = _wordMatcher.MatchWord(s);
-                        if(matchedWord == null) return;
+                        
+                        if (matchedWord == null)
+                        {
+                            _signalBus.Fire(new IncorrectWordSignal());
+                            return;
+                        }
+                        
                         OpenWordOnGrid(matchedWord);
                     };
                 }

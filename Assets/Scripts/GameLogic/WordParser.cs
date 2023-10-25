@@ -32,7 +32,7 @@ namespace GameLogic
                 var letter = strList[i];
                 if (string.IsNullOrWhiteSpace(letter) || letter == "_")
                 {
-                    if (word.Length > 0)
+                    if (word.Length > 1)  // Check if the word length is greater than 1
                     {
                         words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
                         word.Clear();
@@ -45,7 +45,7 @@ namespace GameLogic
                     coordinates.Add(isRow ? (index, i) : (i, index));
                 }
             }
-            if (word.Length > 0)
+            if (word.Length > 1)  // Check if the word length is greater than 1
             {
                 words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
             }

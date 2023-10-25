@@ -16,9 +16,10 @@ namespace GameLogic
             _words = parser.ParseWords();
         }
 
-        public Word MatchWord(string word)
+        public Word MatchAndRemoveWord(string word)
         {
             var matchedWord = _words.FirstOrDefault(w => string.Equals(w.Text, word, StringComparison.OrdinalIgnoreCase));
+            _words.Remove(matchedWord);
             return matchedWord;
         }
     }

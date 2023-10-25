@@ -16,10 +16,11 @@ namespace Audio
 
         public void PlaySound()
         {
-            if (_audioSource != null && !_audioSource.isPlaying)
+            if (_audioSource.isPlaying)
             {
-                _audioSource.Play();
+                _audioSource.Stop();
             }
+            _audioSource.Play();
         }
     }
 }

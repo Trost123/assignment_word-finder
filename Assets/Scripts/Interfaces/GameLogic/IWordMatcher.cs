@@ -4,6 +4,6 @@ namespace Interfaces.GameLogic
 {
     public interface IWordMatcher
     {
-        Word MatchWord(string word);
+        Word MatchAndRemoveWord(string word);
     }
 }

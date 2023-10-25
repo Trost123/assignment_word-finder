@@ -45,7 +45,7 @@ namespace Managers
                 {
                     _userInputHandler.WordSubmitted += s =>
                     {
-                        var matchedWord = _wordMatcher.MatchWord(s);
+                        var matchedWord = _wordMatcher.MatchAndRemoveWord(s);
                         
                         if (matchedWord == null)
                         {

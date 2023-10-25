@@ -2,6 +2,7 @@
 using DG.Tweening;
 using Interfaces.GameLogic;
 using Interfaces.Input;
+using ModestTree;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,6 +41,8 @@ namespace Input
 
         private void OnSubmit(string input)
         {
+            if(input.IsEmpty()) return;
+            
             WordSubmitted?.Invoke(input);
             inputField.text = string.Empty; // Clear the input field
         }

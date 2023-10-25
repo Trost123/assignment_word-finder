@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Config.Models;
 using Interfaces.GameLogic;
-using UnityEngine;
 
 namespace GameLogic
 {
@@ -20,7 +19,6 @@ namespace GameLogic
         public Word MatchWord(string word)
         {
             var matchedWord = _words.FirstOrDefault(w => string.Equals(w.Text, word, StringComparison.OrdinalIgnoreCase));
-            Debug.Log("Word matching: " + word + " " + (matchedWord != null));
             return matchedWord;
         }
     }

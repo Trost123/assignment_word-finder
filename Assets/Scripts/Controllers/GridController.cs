@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UI;
 using UnityEngine;
 
@@ -28,17 +29,13 @@ namespace Controllers
             }
         }
 
-        public void OpenCell((int row, int col) coordinate)
+        public async Task OpenCellAsync((int row, int col) coordinate)
         {
-            var (row, col) = coordinate;
-            if (row >= 0 && row < _gridCards.Count && col >= 0 && col < _gridCards[row].Count)
+            var card = _gridCards[coordinate.row][coordinate.col];
+            if (card != null && !card.IsOpen)
             {
-                var card = _gridCards[row][col];
-                card.FlipCard();  // Assume FlipCard is the method to open/flip the card
-            }
-            else
-            {
-                Debug.LogWarning($"Invalid coordinates: {coordinate}");
+                card.FlipCard();
+                await Task.Delay(500);  // 0.5 seconds delay, adjust as needed
             }
         }
     }

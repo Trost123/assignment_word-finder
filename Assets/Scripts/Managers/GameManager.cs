@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Config.Services;
 using Controllers;
@@ -50,11 +52,11 @@ namespace Managers
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void OpenWordOnGrid(Word matchedWord)
+        private async void OpenWordOnGrid(Word matchedWord)
         {
             foreach (var coordinate in matchedWord.Coordinates)
             {
-                _gridController.OpenCell(coordinate);
+                await _gridController.OpenCellAsync(coordinate);
             }
         }
 

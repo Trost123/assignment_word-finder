@@ -15,6 +15,8 @@ namespace UI
 
         [SerializeField] private Color backColor; // Color for the back side
 
+        public bool IsOpen { get; private set; }
+
         private void Start()
         {
             if (cardImage == null) cardImage = GetComponent<Image>();
@@ -35,6 +37,11 @@ namespace UI
 
         public void FlipCard()
         {
+            if (IsOpen)
+            {
+                return;
+            }
+            
             // Create a new sequence
             var sequence = DOTween.Sequence();
 
@@ -48,6 +55,8 @@ namespace UI
 
             // Add the second rotation from 90 to 0 degrees to the sequence
             sequence.Append(transform.DORotate(new Vector3(0, 0, 0), 0.25f));
+            
+            IsOpen = true;
         }
     }
 }

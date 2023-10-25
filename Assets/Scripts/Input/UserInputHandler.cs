@@ -23,15 +23,16 @@ namespace Input
             // Assuming you have a method to get the IWordMatcher instance
             // _wordMatcher = GetWordMatcherInstance(); 
 
-            okButton.onClick.AddListener(HandleSubmit);
+            okButton.onClick.AddListener(HandleButtonSubmit);
+            inputField.onEndEdit.AddListener(OnSubmit);
         }
 
-        public void OnSubmit(string input)
+        private void OnSubmit(string input)
         {
             WordSubmitted?.Invoke(input);
         }
 
-        private void HandleSubmit()
+        private void HandleButtonSubmit()
         {
             OnSubmit(inputField.text);
         }

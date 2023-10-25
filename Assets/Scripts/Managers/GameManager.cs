@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Config.Models;
 using Config.Services;
 using Controllers;
@@ -82,11 +79,10 @@ namespace Managers
             var gridConfig = loadGridConfigTask.Result;
             var behaviorConfig = loadBehaviorConfigTask.Result;
 
-            _gridController.PopulateGrid(gridConfig.grids[0].grid);  // Call PopulateGrid with the first grid
+            var currentGrid = gridConfig.Grid;
+            _gridController.PopulateGrid(currentGrid);  // Call PopulateGrid with the first grid
             _wrongWordHandler.SetBehaviorConfig(behaviorConfig);
-            _wordMatcher = new WordMatcher(gridConfig);
-
-            // Store behaviorConfig to use later in the IncorrectWordSignal handler...
+            _wordMatcher = new WordMatcher(currentGrid);
         }
     }
 }

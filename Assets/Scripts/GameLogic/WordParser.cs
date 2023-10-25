@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace GameLogic
@@ -6,78 +7,104 @@ namespace GameLogic
     public class WordParser
     {
         private readonly List<List<string>> _grid;
+        private readonly bool[,] _horizontalVisited;
+        private readonly bool[,] _verticalVisited;
 
         public WordParser(List<List<string>> grid)
         {
-            _grid = grid ?? throw new System.ArgumentNullException(nameof(grid));
+            _grid = grid ?? throw new ArgumentNullException(nameof(grid));
+            int rowCount = _grid.Count;
+            int colCount = _grid[0].Count;
+            _horizontalVisited = new bool[rowCount, colCount];
+            _verticalVisited = new bool[rowCount, colCount];
         }
 
         public List<Word> ParseWords()
         {
             var words = new List<Word>();
-            words.AddRange(ParseWordsFromRows());
-            words.AddRange(ParseWordsFromColumns());
+            for (int row = 0; row < _grid.Count; row++)
+            {
+                for (int col = 0; col < _grid[row].Count; col++)
+                {
+                    if (!IsNonCharacter(_grid[row][col]))
+                    {
+                        // Check horizontally
+                        var horizontalWord = ExtractWord(row, col, true);
+                        if (horizontalWord != null)
+                        {
+                            words.Add(horizontalWord);
+                        }
+
+                        // Check vertically
+                        var verticalWord = ExtractWord(row, col, false);
+                        if (verticalWord != null)
+                        {
+                            words.Add(verticalWord);
+                        }
+                    }
+                }
+            }
+
             return words;
         }
 
-        // Other methods remain the same...
-
-        private IEnumerable<Word> ParseWordsFromStringList(List<string> strList, bool isRow, int index)
+        private Word ExtractWord(int row, int col, bool isHorizontal)
         {
-            var words = new List<Word>();
             var word = new StringBuilder();
             var coordinates = new List<(int row, int col)>();
-            for (int i = 0; i < strList.Count; i++)
+            int i = 0;
+
+            while (true)
             {
-                var letter = strList[i];
-                if (string.IsNullOrWhiteSpace(letter) || letter == "_")
+                int currentRow = isHorizontal ? row : row + i;
+                int currentCol = isHorizontal ? col + i : col;
+
+                // Break if out of bounds
+                if (currentRow >= _grid.Count || currentCol >= _grid[0].Count)
                 {
-                    if (word.Length > 1)  // Check if the word length is greater than 1
-                    {
-                        words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
-                        word.Clear();
-                        coordinates.Clear();
-                    }
+                    break;
+                }
+
+                var letter = _grid[currentRow][currentCol];
+                if (IsNonCharacter(letter))
+                {
+                    break;
+                }
+
+                // Skip if this cell has already been visited in the current direction
+                if ((isHorizontal && _horizontalVisited[currentRow, currentCol]) ||
+                    (!isHorizontal && _verticalVisited[currentRow, currentCol]))
+                {
+                    break;
+                }
+
+                word.Append(letter);
+                coordinates.Add((currentRow, currentCol));
+
+                // Mark this cell as visited in the current direction
+                if (isHorizontal)
+                {
+                    _horizontalVisited[currentRow, currentCol] = true;
                 }
                 else
                 {
-                    word.Append(letter);
-                    coordinates.Add(isRow ? (index, i) : (i, index));
+                    _verticalVisited[currentRow, currentCol] = true;
                 }
+
+                i++;
             }
-            if (word.Length > 1)  // Check if the word length is greater than 1
+
+            if (word.Length > 1)
             {
-                words.Add(new Word(word.ToString(), new List<(int row, int col)>(coordinates)));
+                return new Word(word.ToString(), coordinates);
             }
-            return words;
+
+            return null;
         }
 
-        private IEnumerable<Word> ParseWordsFromRows()
+        private bool IsNonCharacter(string value)
         {
-            var words = new List<Word>();
-            for (int i = 0; i < _grid.Count; i++)
-            {
-                words.AddRange(ParseWordsFromStringList(_grid[i], true, i));
-            }
-            return words;
-        }
-
-        private IEnumerable<Word> ParseWordsFromColumns()
-        {
-            var words = new List<Word>();
-            int rowCount = _grid.Count;
-            int colCount = _grid[0].Count;
-
-            for (int col = 0; col < colCount; col++)
-            {
-                var column = new List<string>();
-                for (int row = 0; row < rowCount; row++)
-                {
-                    column.Add(_grid[row][col]);
-                }
-                words.AddRange(ParseWordsFromStringList(column, false, col));
-            }
-            return words;
+            return string.IsNullOrWhiteSpace(value) || value == "_";
         }
     }
 }

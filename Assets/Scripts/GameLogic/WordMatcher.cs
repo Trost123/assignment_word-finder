@@ -10,9 +10,9 @@ namespace GameLogic
     {
         private readonly List<Word> _words;
         // Receive the GridConfig in the constructor
-        public WordMatcher(GridConfig gridConfig)
+        public WordMatcher(List<List<string>> grid)
         {
-            var parser = new WordParser(gridConfig.grids[0].grid);
+            var parser = new WordParser(grid);
             _words = parser.ParseWords();
         }
 

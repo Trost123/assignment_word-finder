@@ -22,16 +22,16 @@ namespace Installers
             Container.Bind<IUserInputHandler>().FromComponentInHierarchy().AsSingle();
             Container.Bind<AudioSource>().FromComponentInHierarchy().AsSingle();
 
-            // Managers
-            Container.Bind<IAudioManager>().To<AudioManager>().AsSingle();
-            Container.Bind<GameManager>().AsSingle().NonLazy();
-
             // Signals
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<IncorrectWordSignal>();
             
             // Signal handlers
             Container.BindInterfacesAndSelfTo<WrongWordHandler>().AsSingle();
+            
+            // Managers
+            Container.Bind<IAudioManager>().To<AudioManager>().AsSingle();
+            Container.Bind<GameManager>().AsSingle().NonLazy();
         }
     }
 }

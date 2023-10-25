@@ -1,4 +1,5 @@
 ﻿using System;
+using Config.Models;
 
 namespace Interfaces.Input
 {

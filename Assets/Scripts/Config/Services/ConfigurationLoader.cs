@@ -1,50 +1,27 @@
 ﻿using System.Threading.Tasks;
-using Config.Interfaces;
-using Config.Models;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Config.Services
 {
     [UsedImplicitly]
     public class ConfigurationLoader
     {
-        private readonly IConfigReader _configReader;
-        private readonly bool _debugMode;
-
-        public ConfigurationLoader(IConfigReader configReader, bool debugMode)
+        public async Task<T> LoadConfigAsync<T>(string path)
         {
-            _configReader = configReader;
-            _debugMode = debugMode;
-        }
+            var handle = Addressables.LoadAssetAsync<TextAsset>(path);
+            await handle.Task;
 
-        public Task<GridConfig> LoadConfigurationAsync(string path)
-        {
-            var tcs = new TaskCompletionSource<GridConfig>();
-
-            _configReader.LoadConfig(path).ContinueWith(loadConfigTask =>
+            if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                if (loadConfigTask.IsFaulted || loadConfigTask.IsCanceled)
-                {
-                    if (loadConfigTask.Exception != null) tcs.SetException(loadConfigTask.Exception);
-                }
-                else
-                {
-                    var gridConfig = loadConfigTask.Result;
-                    if (_debugMode)
-                    {
-                        var jsonText = JsonConvert.SerializeObject(gridConfig);
-                        Debug.Log(jsonText);
-                    }
+                return JsonConvert.DeserializeObject<T>(handle.Result.text);
+            }
 
-                    // Further processing of gridConfig if necessary...
-
-                    tcs.SetResult(gridConfig);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-
-            return tcs.Task;
+            Debug.LogError($"Failed to load config from path: {path}, Status: {handle.Status}");
+            return default;  // Returns null for reference types, zero for numeric types, etc.
         }
     }
 }

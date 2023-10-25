@@ -1,4 +1,5 @@
 ﻿using System;
+using Config.Models;
 using DG.Tweening;
 using Interfaces.GameLogic;
 using Interfaces.Input;
@@ -17,7 +18,7 @@ namespace Input
         private Button okButton;
 
         private IWordMatcher _wordMatcher;
-
+        
         public event Action<string> WordSubmitted;
         
         private void Awake()

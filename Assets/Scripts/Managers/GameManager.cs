@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Config.Models;
 using Config.Services;
 using Controllers;
 using GameLogic;
+using Handlers;
 using Interfaces.GameLogic;
 using Interfaces.Input;
 using Signals;
@@ -18,17 +20,20 @@ namespace Managers
         private readonly ConfigurationLoader _configurationLoader;
         private readonly GridController _gridController;
         private readonly IUserInputHandler _userInputHandler;
+        private readonly WrongWordHandler _wrongWordHandler;
         private  readonly SignalBus _signalBus;
         
         private IWordMatcher _wordMatcher;
 
         [Inject]
-        public GameManager(GridController gridController, ConfigurationLoader configurationLoader, IUserInputHandler userInputHandler, SignalBus signalBus)
+        public GameManager(GridController gridController, ConfigurationLoader configurationLoader,
+            IUserInputHandler userInputHandler, SignalBus signalBus, WrongWordHandler wrongWordHandler)
         {
             _gridController = gridController;
             _configurationLoader = configurationLoader;
             _userInputHandler = userInputHandler;
             _signalBus = signalBus;
+            _wrongWordHandler = wrongWordHandler;
             
             StartGame();
         }
@@ -69,9 +74,19 @@ namespace Managers
 
         private async Task StartGameAsync()
         {
-            var gridConfig = await _configurationLoader.LoadConfigurationAsync("Assets/Config/grid_config.json");
+            var loadGridConfigTask = _configurationLoader.LoadConfigAsync<GridConfig>("Assets/Config/grid_config.json");
+            var loadBehaviorConfigTask = _configurationLoader.LoadConfigAsync<AppConfig>("Assets/Config/behavior_config.json");
+
+            await Task.WhenAll(loadGridConfigTask, loadBehaviorConfigTask);
+
+            var gridConfig = loadGridConfigTask.Result;
+            var behaviorConfig = loadBehaviorConfigTask.Result;
+
             _gridController.PopulateGrid(gridConfig.grids[0].grid);  // Call PopulateGrid with the first grid
+            _wrongWordHandler.SetBehaviorConfig(behaviorConfig);
             _wordMatcher = new WordMatcher(gridConfig);
+
+            // Store behaviorConfig to use later in the IncorrectWordSignal handler...
         }
     }
 }
